@@ -30,14 +30,12 @@ function Register() {
                 "Content-Type": "application/json"
             }
         })  
-        setLoading(false)
-        if(response.status === 200) {
             navigate('/signin') 
             window.location.reload()
-        }
+            setLoading(false)
         }catch(err) {
             toast.error(err.response.data.message) 
-        setLoading(false)
+             setLoading(false)
         } 
 
     }

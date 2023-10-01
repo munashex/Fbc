@@ -74,8 +74,7 @@ const HandleEditProfile = async (e) => {
     </div>
 
     <form className={`${open ? "mt-9 flex flex-col gap-y-3": 'hidden'}`} onSubmit={HandleEditProfile}> 
-        <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} required/>  
-        <input type="text" placeholder="Bio" className="border-b outline-none" required onChange={(e) => setBio(e.target.value)}/> 
+        <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} required/>   
         <button type="submit" className={`${loading ? "bg-blue-600 text-lg text-white p-2 animate-pulse": "bg-blue-600 text-lg text-white p-2"}`}> 
         {loading ? 'uploading...' : 'upload'} 
         </button>

@@ -5,19 +5,25 @@ import {useSelector, useDispatch} from 'react-redux'
 import { getProfile } from '../features/getProfile'  
 import { getUser } from '../features/getUser' 
 import {AiFillLike}  from 'react-icons/ai'
-import { FaComment } from 'react-icons/fa'
-
+import {FaComment } from 'react-icons/fa'
+import {Modal} from 'react-responsive-modal'  
+import {AiOutlineSend} from 'react-icons/ai'
 
 function UserPost() {  
 
 const [images, setImages] = useState([])  
 const [loading, setLoading] = useState(false) 
-const [openComment, setOpenComment] = useState(false)
+const [open, setOpen] = useState(false)  
+const [openComment, setOpenComment] = useState(false) 
+const [detelingLoading, setDeletingLoading] = useState(false)
 
 const token = localStorage.getItem('token') 
 
 const {profile} = useSelector((state) => state.profile)   
-const {user} = useSelector((state) => state.user) 
+const {user} = useSelector((state) => state.user)  
+
+const onOpenModal = () => setOpen(true) 
+const onCloseModal = () => setOpen(false) 
 
 const dispatch = useDispatch() 
 
@@ -50,6 +56,25 @@ const getPosts = async () => {
 useEffect(() => {
 getPosts()
 }, [])
+ 
+const deletePost = async (postId) => {
+  try {
+  setDeletingLoading(true)
+  const response = await axios.delete(`http://localhost:3003/post/${postId}`, {
+    headers: {
+      "Content-Type": "application/json", 
+      Authorization: `Bearer ${token}`
+    }
+  })
+  if(response.status === 200) {
+    window.location.reload()
+  }
+  setDeletingLoading(false)
+  }catch(err) {
+    console.log(err) 
+    setDeletingLoading(false)
+  }
+}
 
 
 
@@ -79,12 +104,27 @@ getPosts()
               <h1 className="font-bold">{user?.name}</h1>
              </div> 
 
-             <span>
-              <BsThreeDots size={23}/>
-             </span>
+             <button className="border-none" onClick={onOpenModal}>
+              <BsThreeDots size={24}/>
+             </button> 
+
+             <Modal open={open} onClose={onCloseModal} 
+            classNames={{modal: 'w-1/2 md:w-1/4', closeIcon: 'mt-1'}} center
+             >
+           <div className="flex  flex-col gap-y-3">
+           <h1 className="text-lg font-bold">delete post</h1> 
+
+           <button className={`${detelingLoading ? "bg-red-600 text-lg rounded-full text-white p-2 animate-pulse": 
+           "bg-red-600 text-lg rounded-full text-white p-2"}`} onClick={() => deletePost(image?._id)}>
+            {detelingLoading ? 'Deleting..': 'Delete'}
+           </button>
+
+           </div> 
+      </Modal>
+
             </div>  
 
-             <h1 className="mt-2 mx-2">{image?.caption}</h1> 
+             <h1 className="my-2 mx-5">{image?.caption}</h1> 
              
              <div>
               <img src={image?.image} className="w-[100%]"/>
@@ -92,13 +132,15 @@ getPosts()
 
              <div className="flex justify-around my-3">
               <span className="inline-flex items-center gap-x-1"><h1>Like</h1><AiFillLike size={22}/></span> 
-              <span className="inline-flex items-center gap-x-1"><h1>comment</h1><FaComment size={22}/></span>
+              <button onClick={() => setOpenComment(!openComment)} className="inline-flex items-center gap-x-1 border-none"><h1>comment</h1><FaComment size={22}/></button>
              </div>
 
-             <div className="relative bg-gray-300 p-2 max-w-sm mx-auto my-4 rounded-xl"> 
-              <textarea className="w-full border-none outline-none bg-gray-300 placeholder:text-black"
+             <div className={`${openComment? "relative bg-gray-200 p-2 max-w-sm mx-auto my-4 rounded-xl": "hidden"}`}> 
+              <textarea className="w-full border-none outline-none bg-gray-200 placeholder:text-black"
               placeholder="Write a comment" 
               />
+
+              <button className="absolute bottom-2 right-2"><AiOutlineSend size={20}/></button>
              </div>
 
           </div> 

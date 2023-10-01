@@ -30,13 +30,11 @@ function Login() {
                 "Content-Type": "application/json"
             }
         })  
-        setLoading(false) 
-        if(response.status === 200) {
             const {token} = response.data 
             localStorage.setItem("token", token)  
-            window.location.reload()
             navigate('/')
-        }
+            window.location.reload()
+            setLoading(false) 
         }catch(err) {
          toast.error(err.response.data.message) 
         setLoading(false)

@@ -42,6 +42,7 @@ function Post() {
       }
      })
      if(response.status === 200) {
+      window.location.reload()
       navigate('/')
      }
      setLoading(false)
@@ -101,7 +102,8 @@ function Post() {
 
          <form className="mt-9 flex flex-col gap-y-1" onSubmit={PostImage}>
           <input type="file" accept='image/*' required onChange={(e) => setImage(e.target.files[0])}/> 
-          <textarea placeholder="caption" className="outline-none placeholder:text-lg" onChange={(e) => setCaption(e.target.value)}/> 
+          <textarea placeholder="caption" className="outline-none placeholder:text-lg" 
+          onChange={(e) => setCaption(e.target.value)}/> 
           <button type="submit" 
           className={`${loading ? 'bg-blue-600 text-white p-1 animate-pulse': 'bg-blue-600 text-white p-1'}`}>
             {loading ? "Posting..." : 'Post'}

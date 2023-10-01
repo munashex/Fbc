@@ -126,7 +126,6 @@ function Profile() {
          : (
          <div className="mt-9 flex md:mt-12 flex-col md:items-center"> 
             <h1 className="text-2xl font-bold ml-6 md:ml-0  md:mr-60 mt-3 uppercase">{user?.name}</h1> 
-            <h1 className="ml-6 md:ml-0 md:mr-60">{profile?.profile?.bio}</h1>
          </div>  
          )}
       </div> 
