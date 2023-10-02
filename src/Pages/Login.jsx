@@ -30,8 +30,9 @@ function Login() {
                 "Content-Type": "application/json"
             }
         })  
-            const {token} = response.data 
-            localStorage.setItem("token", token)  
+            const {token, user} = response.data 
+            localStorage.setItem("token", token)    
+            localStorage.setItem("userId", user)
             navigate('/')
             window.location.reload()
             setLoading(false) 
