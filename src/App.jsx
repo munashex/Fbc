@@ -4,6 +4,8 @@ import Register from './Pages/Register'
 import Login from './Pages/Login'
 import Home from './Pages/Home'
 import Profile from './Pages/Profile'
+import SinglePost from './Pages/SinglePost'
+import UserProfile from './Pages/UserProfile'
 import {BrowserRouter, Routes, Route} from 'react-router-dom' 
 
 const token = localStorage.getItem("token")
@@ -18,6 +20,8 @@ function App() {
       <Route path="/signin" element={<Login/>}/> 
       <Route path="/signup" element={<Register/>}/>
       <Route path="/profile" element={<Profile/>}/>
+      <Route path="/post/:id" element={<SinglePost/>}/> 
+      <Route path="/user/:id" element={<UserProfile/>}/>
     </Routes>
     </BrowserRouter>
     </div>

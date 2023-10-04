@@ -33,7 +33,8 @@ function Profile() {
   const {profile} = useSelector((state) => state.profile)
   const dispatch = useDispatch()  
 
-  const token = localStorage.getItem("token")
+  const token = localStorage.getItem('token'); 
+  
 
   useEffect(() => {
   dispatch(getUser())
@@ -50,6 +51,8 @@ function Profile() {
    }
   }, [])
   
+  
+
   
 
   return (
@@ -96,6 +99,7 @@ function Profile() {
            <HiPencil size={20}/>
            Edit Profile</button>
            </div> 
+           
          </div>
        
       </div> 

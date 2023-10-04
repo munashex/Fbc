@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import Post from '../components/Post';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { AiFillLike, AiOutlineSend } from 'react-icons/ai';
-import { FaComment } from 'react-icons/fa';
+import { FaComment } from 'react-icons/fa'; 
+
 
 function Home() {
   const token = localStorage.getItem('token'); 
@@ -13,8 +14,9 @@ function Home() {
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [openComment, setOpenComment] = useState(false);
-
+  const [openComment, setOpenComment] = useState(false);  
+  const [comment, setComment] = useState('')
+ 
 
   setTimeout(() => {
     if (!token) {
@@ -30,7 +32,7 @@ function Home() {
           'Content-Type': 'application/json',
         },
       });
-      setPosts(response.data.posts);
+      setPosts(response.data.posts.reverse());
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -82,6 +84,39 @@ function Home() {
     }
   };
 
+
+  const handleComments = async (commentId) => {
+  try {
+  const response = await axios.post(`http://localhost:3003/post/comment/${commentId}`, {comment: comment}, {
+    headers: {
+      "Content-Type": "application/json", 
+      Authorization: `Bearer ${token}`
+    }
+  })
+  
+  // Update the posts state to reflect the new comment
+  setPosts((prevPosts) =>
+  prevPosts.map((post) => {
+    if (post._id === commentId) {
+      return {
+        ...post,
+        comments: [...post.comments, response.data.comment],
+      };
+    }
+    return post;
+  })
+);
+
+// Clear the comment input field
+setComment(''); 
+setOpenComment(false)
+  }catch(err) { 
+   console.log(err)
+  }
+  }
+
+ 
+
   return (
     <div>
       <Post />
@@ -99,15 +134,22 @@ function Home() {
         <div className="max-w-lg mt-9 mx-auto">
           {posts.map((post) => (
             <div key={post._id} className="border-y  md:border md:shadow rounded-md my-11">
-              <div className="space-y-1 p-2">
-                <Link className="text-lg font-bold text-blue-600">{post?.name}</Link>
+              <div className=" p-2">
+
+              
+               <Link to={`${post.user === userId ? '/profile' : `/user/${post.user}`}`}  className="text-lg font-bold text-blue-600">{post?.name}</Link> 
                 <h1>{post?.caption}</h1>
               </div>
+
               <img src={post.image} className="w-[100%]" />
 
               <div className="flex justify-around font-bold">
                 <h1>{post?.likes?.length <= 1 ? 'like' : 'likes'} {post?.likes?.length}</h1>
-                <h1>comments</h1>
+
+                <Link to={`/post/${post._id}`} className={`${post?.comments?.length === 0 ? 'invisible' : 'underline text-blue-600'}`}>
+                 view  {post?.comments?.length <= 1 ? 'comment' : 'comments'} 
+                 </Link>
+
               </div>
 
               <div className="flex justify-around my-1">
@@ -129,11 +171,14 @@ function Home() {
               <div className={`${openComment ? 'relative bg-gray-200 p-2 max-w-sm mx-auto my-4 rounded-xl' : 'hidden'}`}>
                 <textarea
                   className="w-full border-none outline-none bg-gray-200 placeholder:text-black"
-                  placeholder="Write a comment"
+                  placeholder="Write a comment" 
+                  onChange={(e) => setComment(e.target.value)} 
+                  
                 />
 
-                <button className="absolute bottom-2 right-2"><AiOutlineSend size={20} /></button>
-              </div>
+                <button disabled={comment.length <= 1} onClick={() => handleComments(post?._id)} className="absolute bottom-2 right-2"><AiOutlineSend size={20} /></button>
+              </div> 
+
             </div>
           ))}
         </div>

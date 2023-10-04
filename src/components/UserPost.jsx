@@ -5,9 +5,10 @@ import {useSelector, useDispatch} from 'react-redux'
 import { getProfile } from '../features/getProfile'  
 import { getUser } from '../features/getUser' 
 import {AiFillLike}  from 'react-icons/ai'
-import {FaComment } from 'react-icons/fa'
+import {FaComment, FaRegUser } from 'react-icons/fa'
 import {Modal} from 'react-responsive-modal'  
-import {AiOutlineSend} from 'react-icons/ai'
+import {AiOutlineSend} from 'react-icons/ai' 
+import {Link} from 'react-router-dom'
 
 function UserPost() {  
 
@@ -17,7 +18,8 @@ const [open, setOpen] = useState(false)
 const [openComment, setOpenComment] = useState(false) 
 const [detelingLoading, setDeletingLoading] = useState(false)
 
-const token = localStorage.getItem('token') 
+const token = localStorage.getItem('token'); 
+
 
 const {profile} = useSelector((state) => state.profile)   
 const {user} = useSelector((state) => state.user)  
@@ -77,7 +79,6 @@ const deletePost = async (postId) => {
 }
 
 
-
     
   return (
     <div>
@@ -100,7 +101,12 @@ const deletePost = async (postId) => {
 
             <div className="flex items-center justify-between mx-2"> 
              <div className="flex items-center gap-x-2 p-2"> 
-             <img src={profile?.profile?.image} className="w-11 rounded-full"/>
+       
+             {profile?.profile?.image ? <img src={profile?.profile?.image} className="w-11 rounded-full"/> : (
+             <span className="bg-gray-200 p-2 rounded-full"> 
+              <FaRegUser size={30}/>
+             </span>
+             )}
               <h1 className="font-bold">{user?.name}</h1>
              </div> 
 
@@ -130,10 +136,14 @@ const deletePost = async (postId) => {
               <img src={image?.image} className="w-[100%]"/>
              </div> 
 
-             <div className="flex justify-around my-3">
-              <span className="inline-flex items-center gap-x-1"><h1>Like</h1><AiFillLike size={22}/></span> 
-              <button onClick={() => setOpenComment(!openComment)} className="inline-flex items-center gap-x-1 border-none"><h1>comment</h1><FaComment size={22}/></button>
-             </div>
+               <div className="flex justify-around font-bold my-2">
+                <h1>{image?.likes?.length <= 1 ? 'like' : 'likes'} {image?.likes?.length}</h1>
+               <Link to={`/post/${image._id}`} className={`${image?.comments?.length === 0 ? 'invisible' : 'underline text-blue-600'}`}>
+               view {image?.comments?.length <= 1 ? 'comment' : 'comments'} 
+                </Link>
+              </div> 
+
+             
 
              <div className={`${openComment? "relative bg-gray-200 p-2 max-w-sm mx-auto my-4 rounded-xl": "hidden"}`}> 
               <textarea className="w-full border-none outline-none bg-gray-200 placeholder:text-black"
