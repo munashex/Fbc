@@ -61,7 +61,7 @@ getPost(id)
           {post?.comments && post?.comments.map((user) => (
             <div key={user._id}>
               <Link to={`/user/${user.user}`} className="font-bold">{user?.name}</Link>
-              <h1>{user?.comment}</h1> 
+              <h1 className="text-slate-600">{user?.comment}</h1> 
               <h1 className="py-1"></h1>
             </div>
           ))}

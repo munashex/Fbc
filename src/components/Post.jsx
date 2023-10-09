@@ -5,6 +5,7 @@ import {FaRegUser} from 'react-icons/fa'
 import {Modal} from 'react-responsive-modal'   
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
  
 function Post() {  
 
@@ -60,15 +61,15 @@ function Post() {
 
           {profile?.profile?.image ?  
           (
-          <div> 
+          <Link to="/profile"> 
            <img src={profile?.profile?.image} className="w-14 rounded-full"/>
-          </div> 
+          </Link> 
           ) 
           : 
            ( 
-           <div className="inline-flex  bg-gray-200 p-2 rounded-full"> 
+           <Link to="/profile" className="inline-flex  bg-gray-200 p-2 rounded-full"> 
               <FaRegUser size={35}/>
-           </div> 
+           </Link> 
            ) 
           }
  

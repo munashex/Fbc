@@ -13,19 +13,38 @@ import { useNavigate } from 'react-router-dom'
 import EditProfile from '../components/EditProfile' 
 import Post from '../components/Post'
 import UserPost from '../components/UserPost'
- 
+import axios from 'axios'
+import { Link } from 'react-router-dom'
+
  
 
 function Profile() {
 
   const [open, setOpen] = useState(false)  
-  const [openEdit, setOpenEdit] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false) 
+  const [openFollowing, setOpenFollowing] = useState(false) 
+  const [openFollowers, setOpenFollowers] = useState(false)
+  const [following, setFollowing] = useState([]) 
+  const [followers, setFollowers] = useState([])
+  const [loadingFollowing, setLoadingFollowing] = useState(false)
+  const [loadingFollowers, setLoadingFollowers] = useState(false)
+
+
+  
 
   const onOpenModal = () => setOpen(true) 
   const onCloseModal = () => setOpen(false)   
 
   const onOpenEdit = () => setOpenEdit(true) 
   const onCloseEdit = () => setOpenEdit(false)
+
+  const onOpenFollowing = () => setOpenFollowing(true) 
+  const onCloseFollowing = () => setOpenFollowing(false)
+
+  const onOpenFollowers = () => setOpenFollowers(true) 
+  const onCloseFollowers = () => setOpenFollowers(false)
+
+  
 
   const navigate = useNavigate()
 
@@ -34,6 +53,7 @@ function Profile() {
   const dispatch = useDispatch()  
 
   const token = localStorage.getItem('token'); 
+  const userId = localStorage.getItem('userId')
   
 
   useEffect(() => {
@@ -52,7 +72,39 @@ function Profile() {
   }, [])
   
   
+ 
+  const getFollowing = async(_id) => {
+  try {
+    setLoadingFollowing(true)
+ const response = await axios.get(`http://localhost:3003/user/following/${_id}`) 
+  setFollowing(response.data.following) 
+  setLoadingFollowing(false)
+  }catch(err) {
+    console.log(err)
+    setLoadingFollowing(false)
+  }
+  }
+  
+  useEffect(() => {
+  getFollowing(userId)
+  }, []) 
 
+  const getFollowers = async(_id) => {
+    try {
+    setLoadingFollowers(true)
+   const response = await axios.get(`http://localhost:3003/user/followers/${_id}`) 
+    setFollowers(response.data.followers) 
+    setLoadingFollowers(false)
+    }catch(err) {
+      console.log(err) 
+      setLoadingFollowers(false)
+    }
+    }
+
+    useEffect(() => {
+      getFollowers(userId)
+      }, []) 
+    
   
 
   return (
@@ -104,6 +156,7 @@ function Profile() {
        
       </div> 
 
+      
       <Modal open={open} onClose={onCloseModal} 
       classNames={{modal: 'w-[90%] md:w-1/3  lg:w-1/4 ', closeIcon: 'mt-1'}} center
       >
@@ -121,7 +174,6 @@ function Profile() {
       </Modal>
 
 
-
       <div>
         {loading ?  
         (<div className="flex justify-center mt-0 md:mt-9"> 
@@ -133,6 +185,57 @@ function Profile() {
          </div>  
          )}
       </div> 
+
+      <div className="max-w-sm mx-auto font-bold text-lg flex justify-center gap-x-8 my-9">
+       <button onClick={onOpenFollowers}>Followers {followers && followers?.length}</button> 
+       <button onClick={onOpenFollowing}>Following {following && following?.length}</button>
+      </div>
+
+      <Modal open={openFollowing} onClose={onCloseFollowing}
+      classNames={{modal: 'w-[90%] md:w-1/2  lg:w-1/2 ', closeIcon: 'mt-1'}} center
+      >
+       <h1 className="text-lg font-bold">Following</h1> 
+       
+       {loadingFollowing ? (
+        <div className="flex justify-center"> 
+          <Loader/>
+        </div>
+      ) : (
+        <div className="flex flex-col mt-5 gap-y-5">
+        {following && following.map((item) => (
+          <Link to={`/user/${item.user}`} key={item._id} className="flex items-center gap-x-3">
+            <img src={item.image} className="w-16 rounded-full"/> 
+            <h1 className="font-bold text-lg">{item.name}</h1>
+          </Link>
+        ))}
+      </div> 
+      )}
+    
+      </Modal> 
+
+
+      <Modal open={openFollowers} onClose={onCloseFollowers}
+      classNames={{modal: 'w-[90%] md:w-1/2  lg:w-1/2 ', closeIcon: 'mt-1'}} center
+      >
+       <h1 className="text-lg font-bold">Followers</h1> 
+       
+       {loadingFollowers ? (
+        <div className="flex justify-center"> 
+          <Loader/>
+        </div>
+      ) : (
+        <div className="flex flex-col mt-5 gap-y-5">
+        {following && following.map((item) => (
+          <Link to={`/user/${item.user}`} key={item._id} className="flex items-center gap-x-3">
+            <img src={item.image} className="w-16 rounded-full"/> 
+            <h1 className="font-bold text-lg">{item.name}</h1>
+          </Link>
+        ))}
+      </div> 
+      )}
+    
+      </Modal> 
+
 
       <Post/> 
       <UserPost/>
