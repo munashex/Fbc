@@ -76,7 +76,7 @@ function Profile() {
   const getFollowing = async(_id) => {
   try {
     setLoadingFollowing(true)
- const response = await axios.get(`http://localhost:3003/user/following/${_id}`) 
+ const response = await axios.get(`https://facebook-kt2g.onrender.com/user/following/${_id}`) 
   setFollowing(response.data.following) 
   setLoadingFollowing(false)
   }catch(err) {
@@ -92,7 +92,7 @@ function Profile() {
   const getFollowers = async(_id) => {
     try {
     setLoadingFollowers(true)
-   const response = await axios.get(`http://localhost:3003/user/followers/${_id}`) 
+   const response = await axios.get(`https://facebook-kt2g.onrender.com/user/followers/${_id}`) 
     setFollowers(response.data.followers) 
     setLoadingFollowers(false)
     }catch(err) {

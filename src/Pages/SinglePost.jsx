@@ -14,7 +14,7 @@ const [post, setPost] = useState({})
 const getPost = async(postId) => {
     try {
       setLoading(true) 
-      const response = await axios.get(`http://localhost:3003/post/${postId}`, {
+      const response = await axios.get(`https://facebook-kt2g.onrender.com/post/${postId}`, {
         headers: {
             "Content-Type": "application/json"
         }

@@ -27,7 +27,7 @@ function Home() {
   const getPosts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:3003/post/allposts', {
+      const response = await axios.get('https://facebook-kt2g.onrender.com/post/allposts', {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -46,7 +46,7 @@ function Home() {
 
   const likePost = async (postId) => {
     try {
-      const response = await axios.post(`http://localhost:3003/post/like/${postId}`, null, {
+      const response = await axios.post(`https://facebook-kt2g.onrender.com/post/like/${postId}`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -66,7 +66,7 @@ function Home() {
 
   const DislikePost = async (postId) => {
     try {
-      const response = await axios.post(`http://localhost:3003/post/dislike/${postId}`, null, {
+      const response = await axios.post(`https://facebook-kt2g.onrender.com/post/dislike/${postId}`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -87,7 +87,7 @@ function Home() {
 
   const handleComments = async (commentId) => {
   try {
-  const response = await axios.post(`http://localhost:3003/post/comment/${commentId}`, {comment: comment}, {
+  const response = await axios.post(`https://facebook-kt2g.onrender.com/post/comment/${commentId}`, {comment: comment}, {
     headers: {
       "Content-Type": "application/json", 
       Authorization: `Bearer ${token}`

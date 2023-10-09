@@ -36,7 +36,7 @@ function UserProfile() {
   const getUser = async (userId) => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:3003/user/${userId}`, {
+      const response = await axios.get(`https://facebook-kt2g.onrender.com/user/${userId}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -55,7 +55,7 @@ function UserProfile() {
 
   const getSingleUser = async () => {
     try {
-      const response = await axios.get(`http://localhost:3003/user/singleUser/${id}`, {
+      const response = await axios.get(`https://facebook-kt2g.onrender.com/user/singleUser/${id}`, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -74,7 +74,7 @@ function UserProfile() {
     try {
       setFollowingLoading(true);
       const response = await axios.post(
-        `http://localhost:3003/user/follow/${_id}`,
+        `https://facebook-kt2g.onrender.com/user/follow/${_id}`,
         {},
         {
           headers: {
@@ -95,7 +95,7 @@ function UserProfile() {
     try {
       setFollowingLoading(true);
       const response = await axios.post(
-        `http://localhost:3003/user/unfollow/${_id}`,
+        `https://facebook-kt2g.onrender.com/user/unfollow/${_id}`,
         {},
         {
           headers: {
@@ -115,7 +115,7 @@ function UserProfile() {
   const getFollowers = async() => {
   try {
     setLoadingFollowers(true) 
-  const response = await axios.get(`http://localhost:3003/user/followers/${id}`) 
+  const response = await axios.get(`https://facebook-kt2g.onrender.com/user/followers/${id}`) 
    setFollowers(response.data.followers) 
    setLoadingFollowers(false)
   }catch(err) {
@@ -137,7 +137,7 @@ function UserProfile() {
  const getFollowing = async() => {
   try {
   setFollowingLoading(true)
-  const response = await axios.get(`http://localhost:3003/user/following/${id}`) 
+  const response = await axios.get(`https://facebook-kt2g.onrender.com/user/following/${id}`) 
   setFollowing(response.data.following) 
   setFollowingLoading(false)
   }catch(err) {

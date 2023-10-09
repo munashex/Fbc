@@ -19,7 +19,7 @@ function Search() {
     const getUser = async (username) => {
      try {
     setLoading(true)
-     const response = await axios.get(`http://localhost:3003/user/search/${username}`)
+     const response = await axios.get(`https://facebook-kt2g.onrender.com/user/search/${username}`)
       setUser(response.data.user) 
       setLoading(false)
     }catch(err) {

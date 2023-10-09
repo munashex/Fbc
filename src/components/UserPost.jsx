@@ -41,7 +41,7 @@ dispatch(getUser())
 const getPosts = async () => {
   try {
   setLoading(true) 
-  const response = await axios.get('http://localhost:3003/post', {
+  const response = await axios.get('https://facebook-kt2g.onrender.com/post', {
     headers: {
       "Content-Type": "application/json", 
       Authorization: `Bearer ${token}`
@@ -62,7 +62,7 @@ getPosts()
 const deletePost = async (postId) => {
   try {
   setDeletingLoading(true)
-  const response = await axios.delete(`http://localhost:3003/post/${postId}`, {
+  const response = await axios.delete(`https://facebook-kt2g.onrender.com/post/${postId}`, {
     headers: {
       "Content-Type": "application/json", 
       Authorization: `Bearer ${token}`

@@ -5,7 +5,7 @@ const token = localStorage.getItem("token")
 
 export const  getUser = createAsyncThunk('/user', async() => {
 try {
-const response = await axios.get('http://localhost:3003/user/currentUser', {headers: {
+const response = await axios.get('https://facebook-kt2g.onrender.com/user/currentUser', {headers: {
     "Content-Type": "application/json", 
     Authorization: `Bearer ${token}`
 }})

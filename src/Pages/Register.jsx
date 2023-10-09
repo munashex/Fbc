@@ -25,7 +25,7 @@ function Register() {
         e.preventDefault()
         try {
         setLoading(true) 
-        const response = await axios.post('http://localhost:3003/api/signup', {name, email, password} , {
+        const response = await axios.post('https://facebook-kt2g.onrender.com/api/signup', {name, email, password} , {
             headers: {
                 "Content-Type": "application/json"
             }

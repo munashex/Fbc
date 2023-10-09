@@ -5,7 +5,7 @@ let token  = localStorage.getItem('token')
 
 export const  getProfile = createAsyncThunk("/profile", async() => {
     try {
-    const response = await axios.get('http://localhost:3003/user/profile', {headers: {
+    const response = await axios.get('https://facebook-kt2g.onrender.com/user/profile', {headers: {
      "Content-Type": "application/json", 
      Authorization: `Bearer ${token}`
     }})

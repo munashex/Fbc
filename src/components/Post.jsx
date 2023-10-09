@@ -36,7 +36,7 @@ function Post() {
     formData.append("image", image) 
     formData.append("caption", caption)
 
-     const response = await axios.post('http://localhost:3003/post', formData, {
+     const response = await axios.post('https://facebook-kt2g.onrender.com/post', formData, {
       headers: {
         "Content-Type": "multipart/form-data", 
         Authorization: `Bearer ${token}`

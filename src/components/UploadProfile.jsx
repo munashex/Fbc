@@ -16,7 +16,7 @@ const HandleUploadProfile = async(e) => {
    const formData = new FormData() 
    formData.append("image", image) 
    
-   const response = await axios.post('http://localhost:3003/user/profile', formData, {
+   const response = await axios.post('https://facebook-kt2g.onrender.com/user/profile', formData, {
     headers: {
       "Content-Type": "multipart/form-data", 
        Authorization: `Bearer ${token}`

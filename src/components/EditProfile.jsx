@@ -28,7 +28,7 @@ const HandleEditProfile = async (e) => {
   formData.append("image", image) 
   formData.append("bio", bio) 
 
-  const response = await axios.post('http://localhost:3003/user/editprofile', formData, {headers: {
+  const response = await axios.post('https://facebook-kt2g.onrender.com/user/editprofile', formData, {headers: {
     "Content-Type": "multipart/form-data",
      Authorization: `Bearer ${token}`
   }})
