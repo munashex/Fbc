@@ -90,7 +90,7 @@ function Navbar() {
          </div> 
 
          <Modal open={open} onClose={onCloseModal} 
-      classNames={{modal: 'w-1/2 lg:w-1/5', closeIcon: 'mt-1'}}
+      classNames={{modal: 'w-[80%] lg:w-1/5', closeIcon: 'mt-1'}}
       >
         <h1 className=" font-bold">Log Out</h1>
         <div className="mt-4 flex gap-x-2 items-center justify-center">
