@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Loader from '../components/Loader';
-import { FaRegUser } from 'react-icons/fa';
-import {Modal} from 'react-responsive-modal' 
+import { FaRegUser, FaUserFriends, FaUserPlus } from 'react-icons/fa';
+import { Modal } from 'react-responsive-modal';
 
 function UserProfile() {
   const [user, setUser] = useState([]);
@@ -152,186 +153,174 @@ function UserProfile() {
 
 
 
-  return (
-    <div>
-      <div className="bg-gradient-to-r from-gray-300 to-slate-300 border relative max-w-2xl mx-auto h-40 md:h-60 md:max-w-2xl">
-        <div>
-          <div className="flex md:hidden">
+ return (
+  <div className="max-w-4xl mx-auto p-4">
+    <div className="bg-white shadow rounded-lg mb-8">
+      <div className="relative h-48 rounded-t-lg bg-gradient-to-r from-blue-400 to-purple-500">
+        <div className="absolute -bottom-16 left-4 flex items-end">
+          <div className="w-32 h-32 rounded-full border-4 border-white overflow-hidden">
             {user?.user?.image ? (
-              <div className="absolute -bottom-9 left-5">
-                <img src={user?.user?.image} className="w-32 rounded-full" />
+              <img src={user?.user?.image} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                <FaRegUser className="w-16 h-16 text-gray-400" />
               </div>
-            ) : (
-              <button className="absolute -bottom-9 border  left-5 bg-gray-200 p-4 rounded-full">
-                <FaRegUser size={80} color="gray" />
-              </button>
             )}
-            {singleUser?.followers?.includes(currentUserId) ? (
-              <button 
-              onClick={() => UnfollowUser(singleUser._id)}
-               className="absolute -bottom-9 right-5 text-lg bg-blue-600 text-white  px-2 rounded-md">
-                {followLoading ? 'loading' : 'unfollow'}
-              </button>
-            ) : (
-              <button
-                onClick={() => followUser(singleUser._id)}
-                className="absolute -bottom-9 right-5 text-lg bg-blue-600 text-white  px-2 rounded-md"
-              >
-                {followLoading ? 'loading' : 'follow'}
-              </button>
-            )}
-          </div>
-
-          <div className="hidden md:flex">
-            {user?.user?.image ? (
-              <div className="absolute -bottom-14 left-5">
-                <img src={user?.user?.image} className="w-32 rounded-full" />
-              </div>
-            ) : (
-              <button className="absolute -bottom-14 border left-5 bg-gray-200 p-4 rounded-full">
-                <FaRegUser size={80} color="gray" />
-              </button>
-            )}
-
-            {singleUser?.followers?.includes(currentUserId) ? 
-            <button 
-            onClick={() => UnfollowUser(singleUser._id)}
-             className="absolute  font-semibold -bottom-11 left-40 text-lg py-1 px-4 bg-blue-600 text-white rounded-md">
-            {followLoading ? 'loading' : 'unfollow'}
-          </button> 
-          : 
-          <button 
-          onClick={() => followUser(singleUser._id)}
-          className="absolute  font-semibold -bottom-11 left-40 text-lg py-1 px-4 bg-blue-600 text-white rounded-md">
-            {followLoading ? 'loading' : 'follow'}
-            </button>
-            }
-            
           </div>
         </div>
       </div>
-
-      
-
-      <div>
-        {loading ? (
-          <div className="flex justify-center mt-0 md:mt-9">
-            <Loader />
-          </div>
-        ) : (
-          <div className="mt-9 flex md:mt-12 flex-col md:items-center">
-            <h1 className="text-2xl font-bold ml-6 md:ml-0  md:mr-60 mt-3 uppercase">
-              {user?.user?.name}
-            </h1>
-          </div>
-        )}
+      <div className="mt-20 px-4 pb-4">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold uppercase">{user?.user?.name}</h1>
+          {singleUser?.followers?.includes(currentUserId) ? (
+            <button
+              onClick={() => UnfollowUser(singleUser._id)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center"
+            >
+              {followLoading ? 'Loading...' : 'Unfollow'}
+            </button>
+          ) : (
+            <button
+              onClick={() => followUser(singleUser._id)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors flex items-center"
+            >
+              {followLoading ? 'Loading...' : 'Follow'}
+            </button>
+          )}
+        </div>
+        <div className="flex mt-4 space-x-4">
+          <button
+            className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex items-center"
+            onClick={onOpenModal}
+          >
+            <FaUserFriends className="mr-2 h-4 w-4" />
+            {singleUser?.followers?.length} Followers
+          </button>
+          <button
+            className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors flex items-center"
+            onClick={onOpenFollowing}
+          >
+            <FaUserPlus className="mr-2 h-4 w-4" />
+            {singleUser?.following?.length} Following
+          </button>
+        </div>
       </div>
+    </div>
 
-      <div className="max-w-sm mx-auto font-bold text-lg flex justify-center gap-x-8 mt-3"> 
-       <button onClick={onOpenModal}>followers {singleUser?.followers?.length}</button> 
-       <button onClick={onOpenFollowing}>following {singleUser?.following?.length}</button> 
-      </div>
-
-      <div>
-        {loading ? (
-          <div className="space-y-7">
-            {[1, 2, 3].map((item) => (
-              <div
-                className="max-w-sm bg-gray-200 animate-pulse md:max-w-lg border p-2 mx-auto h-80"
-                key={item}
-              ></div>
-            ))}
-          </div>
-        ) : (
-          <div className="my-9">
-            {user?.post &&
-              user?.post?.map((item) => (
-                <div className="my-14" key={item._id}>
-                  <div className="max-w-lg  mx-auto border-b  md:border md:shadow rounded-md">
-                    <div className="flex items-center gap-x-2 p-2">
-                      {item?.image ? (
-                        <img src={item?.image} className="w-11 rounded-full" />
-                      ) : (
-                        <span className="bg-gray-200 p-2 rounded-full">
-                          <FaRegUser size={30} />
-                        </span>
-                      )}
-                      <h1 className="font-bold">{item?.name}</h1>
-                    </div>
-
-                    <h1 className="my-2 mx-5">{item?.caption}</h1>
-
-                    <div>
-                      <img src={item?.image} className="w-[100%]" />
-                    </div>
-
-                    <div className="flex justify-around font-bold my-2">
-                      <h1>
-                        {item?.likes?.length <= 1 ? 'like' : 'likes'}{' '}
-                        {item?.likes?.length}
-                      </h1>
-                      <Link
-                        to={`/post/${item._id}`}
-                        className={`${
-                          item?.comments?.length === 0 ? 'invisible' : 'underline text-blue-600'
-                        }`}
-                      >
-                        view {item?.comments?.length <= 1 ? 'comment' : 'comments'}
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        )}
-      </div>
-
-
-      <Modal open={open} onClose={onCloseModal} 
-      classNames={{modal: 'w-[90%] md:w-1/2  lg:w-1/2 ', closeIcon: 'mt-1'}} center
-      >
-      <h1 className="text-lg font-bold">Followers</h1> 
-      
-      {loadingFollowers ? 
-      <div className="flex justify-center">
-        <Loader/>
-      </div>: 
-      ( 
-      <div className="flex flex-col mt-5 gap-y-5">
-        {followers && followers.map((item) => (
-          <Link to={`${item.user === currentUserId ? '/profile' : `/user/${item.user}`}`} key={item._id} className="flex items-center gap-x-3">
-            <img src={item.image} className="w-16 rounded-full"/> 
-            <h1 className="font-bold text-lg">{item.name}</h1>
-          </Link>
+    {loading ? (
+      <div className="space-y-7">
+        {[1, 2, 3].map((item) => (
+          <div
+            className="bg-white shadow rounded-lg p-4 w-full h-80 animate-pulse"
+            key={item}
+          ></div>
         ))}
-      </div> 
-      ) 
-      }
-      </Modal> 
+      </div>
+    ) : (
+      <div className="space-y-8">
+        {user?.post &&
+          user?.post?.map((item) => (
+            <div className="bg-white shadow rounded-lg" key={item._id}>
+              <div className="flex items-center gap-x-2 p-4">
+                {item?.image ? (
+                  <img src={item?.image} alt={item?.name} className="w-12 h-12 rounded-full object-cover" />
+                ) : (
+                  <span className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                    <FaRegUser size={24} className="text-gray-400" />
+                  </span>
+                )}
+                <h1 className="font-bold">{item?.name}</h1>
+              </div>
 
-      <Modal open={openFollowing} onClose={onCloseFollowing}
-      classNames={{modal: 'w-[90%] md:w-1/2  lg:w-1/2 ', closeIcon: 'mt-1'}} center
-      >
-       <h1 className="text-lg font-bold">Following</h1> 
-         
-      {loadingFollowing ? (
-        <div className="flex justify-center"> 
-          <Loader/>
+              <p className="px-4 py-2">{item?.caption}</p>
+
+              {item?.image && (
+                <img src={item?.image} alt="Post" className="w-full object-cover max-h-96" />
+              )}
+
+              <div className="flex justify-around font-bold p-4 border-t">
+                <h1>
+                  {item?.likes?.length} {item?.likes?.length === 1 ? 'like' : 'likes'}
+                </h1>
+                <Link
+                  to={`/post/${item._id}`}
+                  className={`${
+                    item?.comments?.length === 0 ? 'invisible' : 'text-blue-600 hover:underline'
+                  }`}
+                >
+                  {item?.comments?.length} {item?.comments?.length === 1 ? 'comment' : 'comments'}
+                </Link>
+              </div>
+            </div>
+          ))}
+      </div>
+    )}
+
+    <Modal
+      open={open}
+      onClose={onCloseModal}
+      classNames={{
+        modal: 'w-[90%] md:w-1/2 lg:w-1/2 p-6 rounded-lg',
+        closeIcon: 'top-2 right-2',
+      }}
+      center
+    >
+      <h1 className="text-2xl font-bold mb-4">Followers</h1>
+
+      {loadingFollowers ? (
+        <div className="flex justify-center">
+          <Loader />
         </div>
       ) : (
-        <div className="flex flex-col mt-5 gap-y-5">
-        {following && following.map((item) => (
-          <Link to={`${item.user === currentUserId ? '/profile' : `/user/${item.user}`}`} key={item._id} className="flex items-center gap-x-3">
-            <img src={item.image} className="w-16 rounded-full"/> 
-            <h1 className="font-bold text-lg">{item.name}</h1>
-          </Link>
-        ))}
-      </div> 
+        <div className="space-y-4">
+          {followers &&
+            followers.map((item) => (
+              <Link
+                to={`${item.user === currentUserId ? '/profile' : `/user/${item.user}`}`}
+                key={item._id}
+                className="flex items-center gap-x-3 p-2 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                <img src={item.image} alt={item.name} className="w-12 h-12 rounded-full object-cover" />
+                <h1 className="font-bold text-lg">{item.name}</h1>
+              </Link>
+            ))}
+        </div>
       )}
-      </Modal> 
+    </Modal>
 
-    </div>
-  );
+    <Modal
+      open={openFollowing}
+      onClose={onCloseFollowing}
+      classNames={{
+        modal: 'w-[90%] md:w-1/2 lg:w-1/2 p-6 rounded-lg',
+        closeIcon: 'top-2 right-2',
+      }}
+      center
+    >
+      <h1 className="text-2xl font-bold mb-4">Following</h1>
+
+      {loadingFollowing ? (
+        <div className="flex justify-center">
+          <Loader />
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {following &&
+            following.map((item) => (
+              <Link
+                to={`${item.user === currentUserId ? '/profile' : `/user/${item.user}`}`}
+                key={item._id}
+                className="flex items-center gap-x-3 p-2 hover:bg-gray-100 rounded-md transition-colors"
+              >
+                <img src={item.image} alt={item.name} className="w-12 h-12 rounded-full object-cover" />
+                <h1 className="font-bold text-lg">{item.name}</h1>
+              </Link>
+            ))}
+        </div>
+      )}
+    </Modal>
+  </div>
+); 
 }
 
 export default UserProfile;

@@ -1,184 +1,169 @@
 import { useEffect, useState } from 'react';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Post from '../components/Post';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { AiFillLike, AiOutlineSend } from 'react-icons/ai';
-import { FaComment } from 'react-icons/fa'; 
-
+import { FaComment } from 'react-icons/fa';
 
 function Home() {
   const token = localStorage.getItem('token'); 
-  const userId = localStorage.getItem("userId")
+  const userId = localStorage.getItem('userId');
   const navigate = useNavigate();
-
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [openComment, setOpenComment] = useState(false);  
-  const [comment, setComment] = useState('')
- 
-
-  setTimeout(() => {
-    if (!token) {
-      navigate('/signin');
-    }
-  }, 1000);
-
-  const getPosts = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get('https://facebook-kt2g.onrender.com/post/allposts', {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      setPosts(response.data.posts.reverse());
-      setLoading(false);
-    } catch (err) {
-      console.log(err);
-      setLoading(false);
-    }
-  };
+  const [loading, setLoading] = useState(true);
+  const [openComment, setOpenComment] = useState('');
+  const [comment, setComment] = useState('');
 
   useEffect(() => {
-    getPosts();
-  }, []);
+    if (!token) {
+      navigate('/signin');
+      return;
+    }
 
-  const likePost = async (postId) => {
+    const getPosts = async () => {
+      try {
+        const response = await axios.get('https://facebook-kt2g.onrender.com/post/allposts', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        setPosts(response.data.posts.reverse());
+        setLoading(false);
+      } catch (err) {
+        console.log(err);
+        setLoading(false);
+      }
+    };
+    getPosts();
+  }, [navigate, token]);
+
+  const updatePostLikes = (postId, likes) => {
+    setPosts(prevPosts => 
+      prevPosts.map(post => 
+        post._id === postId ? { ...post, likes } : post
+      )
+    );
+  };
+
+  const handleLike = async (postId) => {
     try {
       const response = await axios.post(`https://facebook-kt2g.onrender.com/post/like/${postId}`, null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setPosts((prevUsers) =>
-      prevUsers.map((user) => {
-        if (user._id === postId) {
-          return { ...user, likes: response.data.post.likes };
-        }
-        return user;
-      })
-    );
+      updatePostLikes(postId, response.data.post.likes);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const DislikePost = async (postId) => {
+  const handleDislike = async (postId) => {
     try {
       const response = await axios.post(`https://facebook-kt2g.onrender.com/post/dislike/${postId}`, null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setPosts((prevUsers) =>
-      prevUsers.map((user) => {
-        if (user._id === postId) {
-          return { ...user, likes: response.data.post.likes };
-        }
-        return user;
-      })
-    );
+      updatePostLikes(postId, response.data.post.likes);
     } catch (err) {
       console.log(err);
     }
   };
 
-
-  const handleComments = async (commentId) => {
-  try {
-  const response = await axios.post(`https://facebook-kt2g.onrender.com/post/comment/${commentId}`, {comment: comment}, {
-    headers: {
-      "Content-Type": "application/json", 
-      Authorization: `Bearer ${token}`
+  const handleCommentSubmit = async (postId) => {
+    try {
+      const response = await axios.post(`https://facebook-kt2g.onrender.com/post/comment/${postId}`, { comment }, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
+          post._id === postId
+            ? { ...post, comments: [...post.comments, response.data.comment] }
+            : post
+        )
+      );
+      setComment('');
+      setOpenComment('');
+    } catch (err) {
+      console.log(err);
     }
-  })
-  
-  // Update the posts state to reflect the new comment
-  setPosts((prevPosts) =>
-  prevPosts.map((post) => {
-    if (post._id === commentId) {
-      return {
-        ...post,
-        comments: [...post.comments, response.data.comment],
-      };
-    }
-    return post;
-  })
-);
-
-// Clear the comment input field
-setComment(''); 
-setOpenComment(false)
-  }catch(err) { 
-   console.log(err)
-  }
-  }
-
- 
+  };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100 px-4">
       <Post />
-
       {loading ? (
-        <div className="space-y-7 mt-9">
-          {[1, 2, 3].map((item) => (
+        <div className="space-y-7 ">
+          {[1, 2, 3].map(item => (
             <div
-              className="max-w-sm bg-gray-200 animate-pulse md:max-w-lg border p-2 mx-auto h-80"
               key={item}
+              className="max-w-sm bg-gray-200 animate-pulse md:max-w-lg border p-4 mx-auto rounded-md h-80 shadow-md"
             ></div>
           ))}
         </div>
       ) : (
-        <div className="max-w-lg mt-9 mx-auto">
-          {posts.map((post) => (
-            <div key={post._id} className="border-y  md:border md:shadow rounded-md my-11">
-              <div className=" p-2">
-
-              
-               <Link to={`${post.user === userId ? '/profile' : `/user/${post.user}`}`}  className="text-lg font-bold text-blue-600">{post?.name}</Link> 
-                <h1>{post?.caption}</h1>
+        <div className="max-w-lg  mx-auto">
+          {posts.map(post => (
+            <div key={post._id} className="border-y md:border md:shadow-lg rounded-md my-11 bg-white">
+              <div className="p-4">
+                <Link
+                  to={`${post.user === userId ? '/profile' : `/user/${post.user}`}`}
+                  className="text-lg font-bold text-blue-600 hover:underline"
+                >
+                  {post?.name}
+                </Link>
+                <p className="text-gray-800 mt-1">{post?.caption}</p>
               </div>
-
-              <img src={post.image} className="w-[100%]" />
-
-              <div className="flex justify-around font-bold">
+              <img src={post.image} alt={post.caption} className="w-full rounded-b-lg" />
+              <div className="flex justify-between px-4 py-2 font-bold text-gray-600">
                 <h1>{post?.likes?.length <= 1 ? 'like' : 'likes'} {post?.likes?.length}</h1>
-
-                <Link to={`/post/${post._id}`} className={`${post?.comments?.length === 0 ? 'invisible' : 'underline text-blue-600'}`}>
-                 view  {post?.comments?.length <= 1 ? 'comment' : 'comments'} 
-                 </Link>
-
+                <Link
+                  to={`/post/${post._id}`}
+                  className={`${
+                    post?.comments?.length === 0 ? 'invisible' : 'underline text-blue-600 hover:text-blue-800'
+                  }`}
+                >
+                  view {post?.comments?.length <= 1 ? 'comment' : 'comments'}
+                </Link>
               </div>
-
-              <div className="flex justify-around my-1">
-              {post?.likes.includes(userId) ? 
-
-              <button className="border-none outline-none" onClick={() => DislikePost(post?._id)}>
-                <AiFillLike size={22} color="blue"/> 
-                </button> 
-              : 
-              <button className="border-none outline-none" onClick={() => likePost(post?._id)}>
-                <AiFillLike size={22}/> 
-                </button>}
-
-                <button onClick={() => setOpenComment(!openComment)}>
+              <div className="flex justify-between px-4 py-2 border-t">
+                <button
+                  className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition"
+                  onClick={() => (post?.likes.includes(userId) ? handleDislike(post?._id) : handleLike(post?._id))}
+                >
+                  <AiFillLike size={22} className={post?.likes.includes(userId) ? 'text-blue-600' : ''} />
+                  <span>{post?.likes.includes(userId) ? 'Dislike' : 'Like'}</span>
+                </button>
+                <button
+                  className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition"
+                  onClick={() => setOpenComment(post._id === openComment ? '' : post._id)}
+                >
                   <FaComment size={22} />
+                  <span>Comment</span>
                 </button>
               </div>
-
-              <div className={`${openComment ? 'relative bg-gray-200 p-2 max-w-sm mx-auto my-4 rounded-xl' : 'hidden'}`}>
-                <textarea
-                  className="w-full border-none outline-none bg-gray-200 placeholder:text-black"
-                  placeholder="Write a comment" 
-                  onChange={(e) => setComment(e.target.value)} 
-                  
-                />
-
-                <button disabled={comment.length <= 1} onClick={() => handleComments(post?._id)} className="absolute bottom-2 right-2"><AiOutlineSend size={20} /></button>
-              </div> 
-
+              {openComment === post._id && (
+                <div className="p-4 bg-gray-100 border-t mt-2 rounded-b-lg">
+                  <textarea
+                    className="w-full h-20 p-2 border-none outline-none bg-white rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400"
+                    placeholder="Write a comment..."
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                  <div className="flex justify-end mt-2">
+                    <button
+                      disabled={comment.length <= 1}
+                      onClick={() => handleCommentSubmit(post._id)}
+                      className={`px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition ${
+                        comment.length <= 1 ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                    >
+                      <AiOutlineSend size={20} />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -188,6 +173,7 @@ setOpenComment(false)
 }
 
 export default Home;
+
 
 
 
